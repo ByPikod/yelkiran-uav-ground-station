@@ -1,5 +1,4 @@
-"""Main"""
-import yelkiran
+from src import groundstation
 
 if __name__ == "__main__":
-    yelkiran.launch()
+    groundstation.Application()
