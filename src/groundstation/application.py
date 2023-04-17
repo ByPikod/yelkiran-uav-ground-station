@@ -12,11 +12,13 @@ from .server import Server
 
 
 class Application:
-    """Initialize the window and server."""
+    """
+    Initialize the window and server.
+    """
 
-    config: ConfigManager
-    server: Server
-    window: Window
+    config: ConfigManager = None
+    server: Server = None
+    window: Window = None
 
     log_directory: str | None
 
@@ -41,15 +43,26 @@ class Application:
         logging._logger = Logger(self.log_directory)
         log().info("Logger initialized.")
 
+        # Window
+        self.root = tk.Tk()
+        self.window = Window(master=self.root)
+
         # Server
+        def update_image(image: bytes) -> None:
+            """
+            Callback to update image in the window.
+            """
+            self.window.image = image
+
         self.server = Server(
             (
                 self.config.get_string("server.host"),
                 self.config.get_int("server.port")
-            )
+            ),
+            update_image
         )
 
-        # Window
-        self.root = tk.Tk()
-        self.window = Window(master=self.root)
+        # Start window loop
         self.window.mainloop()
+        self.server.running = False
+        self.server.server.close()

@@ -32,7 +32,9 @@ class CustomOut:
 
 
 class Logger:
-    """Initialize logging and print formatting systems."""
+    """
+    Initialize logging and print formatting systems.
+    """
 
     def __init__(self, directory: str = None) -> None:
 
