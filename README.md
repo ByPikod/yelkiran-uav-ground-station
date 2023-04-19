@@ -1,2 +1,2 @@
-# yelkiran-uav-ground-station
+# Yelkıran UAV - Ground Station
 Ground station for yelkiran UAV.
