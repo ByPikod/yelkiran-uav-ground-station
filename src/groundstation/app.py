@@ -7,8 +7,8 @@ from . import logging
 from .logging import Logger
 from .logging import logger as log
 from .config import ConfigManager
-from .window import Window
 from .server import Server
+from .gui import Window
 
 
 class Application:
@@ -43,26 +43,26 @@ class Application:
         logging._logger = Logger(self.log_directory)
         log().info("Logger initialized.")
 
-        # Window
-        self.root = tk.Tk()
-        self.window = Window(master=self.root)
-
         # Server
-        def update_image(image: bytes) -> None:
-            """
-            Callback to update image in the window.
-            """
-            self.window.image = image
 
         self.server = Server(
-            (
-                self.config.get_string("server.host"),
-                self.config.get_int("server.port")
-            ),
-            update_image
+            self.config.get_string("server.host"),
+            self.config.get_int("server.query_port"),
+            self.config.get_int("server.stream_port")
         )
 
-        # Start window loop
+        # Window
+
+        self.root = tk.Tk()
+        self.window = Window(
+            self.server,
+            master=self.root
+        )
+
+        self.window.set_output_size(
+            self.config.get_int("appearance.video-width"),
+            self.config.get_int("appearance.video-height"),
+        )
+
         self.window.mainloop()
-        self.server.running = False
-        self.server.server.close()
+        self.server.terminate()

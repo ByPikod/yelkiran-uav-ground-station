@@ -21,9 +21,15 @@ class ConfigManager:
             "logging-directory": "./logs/"
         }
 
+        conf["APPEARANCE"] = {
+            "video-width": 1280,
+            "video-height": 720
+        }
+
         conf["SERVER"] = {
             "host": "0.0.0.0",
-            "port": "1864"
+            "query_port": "1864",
+            "stream_port": "2023"
         }
 
     def __init__(self):
@@ -36,7 +42,7 @@ class ConfigManager:
 
         # Read data
         root_dir = os.path.dirname(os.path.abspath(__file__))
-        self.conf_path = os.path.join(root_dir, "configuration.ini")
+        self.conf_path = os.path.join(root_dir, "../configuration.ini")
         self.config_parser.read(self.conf_path)
 
         # Write data

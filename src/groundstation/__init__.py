@@ -1,2 +1,2 @@
 from .logging import Logger
-from .application import Application
+from .app import Application
