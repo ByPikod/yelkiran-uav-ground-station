@@ -101,7 +101,7 @@ class Window(tk.Frame):
             img_decoded: np.ndarray = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
             img_decoded = cv2.cvtColor(img_decoded, cv2.COLOR_BGR2RGB)
             image = Image.fromarray(img_decoded)
-            image_tk = ImageTk.PhotoImage(image.resize((600, 300)))
+            image_tk = ImageTk.PhotoImage(image.resize(self.output))
             self.label_image.imgtk = image_tk
             self.label_image.configure(image=image_tk)
 
