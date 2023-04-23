@@ -28,8 +28,10 @@ class ConfigManager:
 
         conf["SERVER"] = {
             "host": "0.0.0.0",
-            "query_port": "1864",
-            "stream_port": "2023"
+            "query-port": 1864,
+            "stream-port": 2023,
+            "timeout-period": 5,
+            "timeout-check-frequency": 5
         }
 
     def __init__(self):
@@ -53,6 +55,7 @@ class ConfigManager:
         Allows you to retrieve config data quickly.
         You can write "simulator.enabled" instead ["SIMULATOR"]["enabled"]
         """
+
         split_locator = locator.split(".")
         split_locator[0] = split_locator[0].upper()
 
@@ -76,6 +79,7 @@ class ConfigManager:
         Allows you to write config data quickly.
         You can write "simulator.enabled" instead ["SIMULATOR"]["enabled"]
         """
+
         split_locator = locator.split(".")
         split_locator[0] = split_locator[0].upper()
 

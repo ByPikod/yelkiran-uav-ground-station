@@ -3,11 +3,12 @@ import os
 import datetime
 import tkinter as tk
 
+from . import server as sv
 from . import logging
 from .logging import Logger
 from .logging import logger as log
 from .config import ConfigManager
-from .server import Server
+from .client import Client
 from .gui import Window
 
 
@@ -17,7 +18,7 @@ class Application:
     """
 
     config: ConfigManager = None
-    server: Server = None
+    server: sv.Server = None
     window: Window = None
 
     log_directory: str | None
@@ -44,11 +45,16 @@ class Application:
         log().info("Logger initialized.")
 
         # Server
+        class CustomClient(Client):
+            heartbeat_timeout = self.config.get_int("server.timeout-period")
+            heartbeat_check_frequency = self.config.get_int("server.timeout-check-frequency")
 
-        self.server = Server(
+        sv.Client = CustomClient
+
+        self.server = sv.Server(
             self.config.get_string("server.host"),
-            self.config.get_int("server.query_port"),
-            self.config.get_int("server.stream_port")
+            self.config.get_int("server.query-port"),
+            self.config.get_int("server.stream-port")
         )
 
         # Window

@@ -3,6 +3,7 @@ import threading as t
 import socket as s
 
 from .logging import logger as log
+from .config import ConfigManager
 from .client import Client
 
 
@@ -23,7 +24,12 @@ class Server:
 
     running: bool = True
 
-    def __init__(self, host: str, tcp_port: int, udp_port: int) -> None:
+    def __init__(
+            self,
+            host: str,
+            tcp_port: int,
+            udp_port: int
+    ) -> None:
         # Create socket instances
         self.tcp_server = s.socket(s.AF_INET, s.SOCK_STREAM)
         self.tcp_server.bind((host, tcp_port))
@@ -53,12 +59,17 @@ class Server:
                     break
                 log().error(f"Failed to accept client: {e}")
                 continue
+
             # Client connected
-            self.client = Client(client_socket, client_addr, self.on_disconnected)
+            self.client = Client(
+                client_socket,
+                client_addr,
+                self.on_disconnected
+            )
             self.on_connected()
 
             # Wait until connection broke
-            self.client.handle_tcp()
+            self.client.thread_listening.join()
 
     def handle_udp(self) -> None:
         """
@@ -81,6 +92,7 @@ class Server:
                 print(f"Failed to read UDP stream: {e}")
 
             if (
+                self.client is not None and
                 addr[0] == self.client.addr[0]
             ):
                 self.stream_dump = data
