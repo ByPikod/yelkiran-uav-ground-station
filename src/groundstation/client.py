@@ -1,4 +1,6 @@
 """Client class for multithreading."""
+from typing import Tuple
+
 import socket as s
 import threading as t
 import time
@@ -12,7 +14,7 @@ class Client:
     """
 
     socket: s.socket
-    addr: tuple[str, int]
+    addr: Tuple[str, int]
 
     listen: bool = True
 
@@ -29,7 +31,7 @@ class Client:
     def __init__(
             self,
             client: s.socket,
-            addr: tuple[str, int],
+            addr: Tuple[str, int],
             disconnected
     ) -> None:
         # Fill fields

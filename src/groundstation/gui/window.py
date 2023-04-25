@@ -1,9 +1,11 @@
 """Window"""
+from typing import Tuple
+
 import pickle
-import numpy as np
 import tkinter as tk
 
 import cv2
+import numpy as np
 from PIL import Image, ImageTk
 
 from ..server import Server
@@ -17,7 +19,7 @@ class Window(tk.Frame):
     """
 
     label_image: tk.Label = None
-    output: tuple[int, int] = (1280, 720)
+    output: Tuple[int, int] = (1280, 720)
     server: Server
 
     def __init__(

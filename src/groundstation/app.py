@@ -1,4 +1,6 @@
 """Application"""
+from typing import Union
+
 import os
 import datetime
 import tkinter as tk
@@ -21,7 +23,7 @@ class Application:
     server: sv.Server = None
     window: Window = None
 
-    log_directory: str | None
+    log_directory: Union[str, None]
 
     def __init__(self) -> None:
 

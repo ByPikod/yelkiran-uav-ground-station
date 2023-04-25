@@ -1,9 +1,10 @@
 """Server"""
+from typing import Tuple
+
 import threading as t
 import socket as s
 
 from .logging import logger as log
-from .config import ConfigManager
 from .client import Client
 
 
@@ -14,12 +15,12 @@ class Server:
 
     udp_server: s.socket
     tcp_server: s.socket
-    client: Client | None = None
+    client: Tuple[Client, None] = None
 
     tcp_thread: t.Thread
     udp_thread: t.Thread
 
-    addr: tuple[str, int]
+    addr: Tuple[str, int]
     stream_dump: bytes = None
 
     running: bool = True
@@ -54,10 +55,10 @@ class Server:
             # Accept any connection
             try:
                 client_socket, client_addr = self.tcp_server.accept()
-            except Exception as e:
+            except Exception as error:
                 if not self.running:
                     break
-                log().error(f"Failed to accept client: {e}")
+                log().error(f"Failed to accept client: {error}")
                 continue
 
             # Client connected
@@ -82,14 +83,14 @@ class Server:
 
             # Listen for packets
             data: bytes = b''
-            addr: tuple[str, int] = ('', 0)
+            addr: Tuple[str, int] = ('', 0)
 
             try:
                 data, addr = self.udp_server.recvfrom(60000)
-            except Exception as e:
+            except Exception as error:
                 if not self.running:
                     return
-                print(f"Failed to read UDP stream: {e}")
+                print(f"Failed to read UDP stream: {error}")
 
             if (
                 self.client is not None and
@@ -117,7 +118,7 @@ class Server:
 
         log().info(f"Client connected: {self.client.addr[0]}:{self.client.addr[1]}")
 
-    def on_disconnected(self, socket: s.socket, addr: tuple[str, int]) -> None:
+    def on_disconnected(self, socket: s.socket, addr: Tuple[str, int]) -> None:
         """
         On socket disconnected event
         :param socket: Socket

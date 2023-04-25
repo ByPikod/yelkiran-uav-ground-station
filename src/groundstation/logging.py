@@ -1,3 +1,6 @@
+"""Logging utils"""
+from typing import Tuple
+
 import datetime
 import sys
 import os
@@ -70,9 +73,12 @@ class Logger:
         sys.stdout.write(message)
 
 
-_logger: Logger | None = None
+_logger: Tuple[Logger, None] = None
 
 
 def logger() -> Logger:
+    """
+    Retrieve static logger class
+    """
     global _logger
     return _logger
