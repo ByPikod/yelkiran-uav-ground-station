@@ -3,6 +3,7 @@ from typing import Tuple
 
 import threading as t
 import socket as s
+import time
 
 from .logging import logger as log
 from .client import Client
@@ -68,7 +69,7 @@ class Server:
                 self.on_disconnected
             )
             self.on_connected()
-
+            
             # Wait until connection broke
             self.client.thread_listening.join()
 
@@ -79,6 +80,7 @@ class Server:
 
         while self.running:
             if self.client is None:
+                time.sleep(0.1)
                 continue
 
             # Listen for packets

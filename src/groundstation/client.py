@@ -6,6 +6,7 @@ import threading as t
 import time
 
 from .logging import logger as log
+from .utilities import PeriodicTimer
 
 
 class Client:
@@ -19,7 +20,7 @@ class Client:
     listen: bool = True
 
     thread_listening: t.Thread
-    heartbeat_timer: t.Timer = None
+    heartbeat_timer: PeriodicTimer = None
 
     # How much time after client will be disconnected from the moment that heartbeat stopped (second).
     heartbeat_timeout = 5
@@ -50,12 +51,13 @@ class Client:
         """
         Checks if client is still connected.
         """
-
-        if self.listen + self.heartbeat_timeout > time.time():
-            self.heartbeat_timer = t.Timer(
+        if self.heartbeat_last + self.heartbeat_timeout > time.time():
+            self.heartbeat_timer = PeriodicTimer(
                 float(self.heartbeat_check_frequency),
+                0.1,
                 self.check_heartbeat
             )
+            self.heartbeat_timer.start()
             return
 
         self.kick()
@@ -71,7 +73,8 @@ class Client:
             try:
                 data = self.socket.recv(512)
                 if b"heartbeat" in data:
-                    log().info(f"Heartbeat received: {self.socket.getsockname()[0]}:{self.socket.getsockname()[1]}")
+                    addr, port = self.socket.getsockname()
+                    log().info(f"Heartbeat received: {addr}:{port}")
                     self.heartbeat_last = time.time()
             except OSError:
                 self.cb_disconnected(self.socket, self.addr)
@@ -82,7 +85,6 @@ class Client:
         """
         Terminate connection.
         """
-
         self.listen = False
         self.socket.close()
         if self.heartbeat_timer is not None:

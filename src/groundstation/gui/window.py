@@ -107,4 +107,4 @@ class Window(tk.Frame):
             self.label_image.imgtk = image_tk
             self.label_image.configure(image=image_tk)
 
-        self.after(5, self.get_stream)
+        self.after(int(1000 / 30), self.get_stream)
